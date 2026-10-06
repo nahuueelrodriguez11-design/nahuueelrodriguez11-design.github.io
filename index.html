@@ -114,6 +114,13 @@
   .promo-precio .antes{display:block;font-size:14px;color:var(--gris);text-decoration:line-through}
   .promo-precio .ahora{display:block;font-size:21px;font-weight:700;color:var(--verde);font-variant-numeric:tabular-nums}
   .promo .boton{margin-top:18px}
+  .solo-local{
+    display:inline-block;margin-top:8px;
+    font-size:12.5px;font-weight:700;letter-spacing:.06em;
+    color:#E5A33C;border:1px solid rgba(229,163,60,.45);
+    padding:3px 9px;border-radius:2px;
+  }
+  .promo-item .solo-local{margin-top:9px}
   .solo-dias{
     display:inline-block;margin-top:7px;
     font-size:12.5px;font-weight:700;letter-spacing:.06em;
@@ -679,7 +686,7 @@
   <section id="promo" style="padding-top:30px">
     <div class="promo">
       <p class="promo-titulo">Nuestras promos<br>del mediodía</p>
-      <p class="promo-que">Todos los días de 12:00 a 16:00. Tres promos con precio especial.</p>
+      <p class="promo-que">Todos los días de 12:00 a 16:00. Cuatro promos con precio especial.</p>
       <div class="promo-lista">
         <div class="promo-item">
           <div>
@@ -694,6 +701,14 @@
             <p>Dos hamburguesas doble carne con cheddar y panceta, las dos con papas fritas.</p>
           </div>
           <div class="promo-precio"><span class="antes">$960</span><span class="ahora">$790</span><button class="add add-promo" data-id="promo-2-doble-cuarto" aria-label="Agregar 2 Doble cuarto">Agregar</button></div>
+        </div>
+        <div class="promo-item">
+          <div>
+            <b>Napolitana XXL</b>
+            <p>Para 2 de buen comer o 3. Salsa, jamón, muzzarella, tomate y orégano, con papas fritas. Con 10% off al mediodía.</p>
+            <span class="solo-local">Solo para consumir en el local</span>
+          </div>
+          <div class="promo-precio"><span class="antes">$1190</span><span class="ahora">$1071</span></div>
         </div>
         <div class="promo-item">
           <div>
@@ -870,6 +885,11 @@
   <section id="milanesas">
     <h2 class="titulo">Milanesas</h2>
     <ul>
+      <li>
+        <div class="fila"><span class="nombre">Napolitana XXL</span><span class="guia"></span><span class="precio">$1190</span></div>
+        <p class="ingr">Para 2 de buen comer o 3. Salsa, jamón, muzzarella, tomate y orégano, con papas fritas.</p>
+        <span class="solo-local">Solo para consumir en el local</span>
+      </li>
       <li>
         <div class="fila"><span class="nombre">Napolitana para 2</span><span class="guia"></span><span class="precio">$990</span><button class="add" data-id="milanesas-napolitana" aria-label="Agregar Napolitana para 2">+</button></div>
         <p class="ingr">Salsa, jamón, muzzarella, tomate y orégano, con papas fritas.</p>
