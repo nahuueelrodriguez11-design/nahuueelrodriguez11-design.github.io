@@ -1230,7 +1230,7 @@
   var pendiente = null;
   var editando = null;
   var comentario = "";
-  var pedido = { modo:"delivery", nombre:"", zona:"", barrio:"", pago:"", hora:"", cambio:"", paga:"" };
+  var pedido = { modo:"delivery", nombre:"", zona:"", barrio:"", pago:"", hora:"", cambio:"", paga:"", cuando:"ya" };
 
   var hoy = new Date().getDay();            // 0 domingo ... 6 sábado
   var ahoraH = new Date().getHours() + new Date().getMinutes() / 60;
@@ -1787,6 +1787,13 @@
         pantallaPago(true);
         return;
       }
+      if(chip.dataset.grupo === "cuando"){
+        pedido.cuando = chip.dataset.valor;
+        var nc = $("#nombre", caja); if(nc) pedido.nombre = nc.value;
+        if(pedido.cuando === "ya") pedido.hora = horaMinima();
+        pantallaPago(true);
+        return;
+      }
       if(chip.dataset.grupo === "pago"){
         pedido.pago = seleccion("pago")[0] || "";
         var n1 = $("#nombre", caja); if(n1) pedido.nombre = n1.value;
@@ -2122,6 +2129,21 @@
     return { hora: ventanas((hoy + 1) % 7)[0][0], manana: true };
   }
 
+  function dentroDeHorario(hs, dia){
+    var v = ventanas(dia), x = aDec(hs);
+    for(var i = 0; i < v.length; i++){
+      if(x >= aDec(v[i][0]) && x <= cierreDec(v[i][1])) return true;
+    }
+    return false;
+  }
+
+  /* el pedido va programado si el local está cerrado o si el cliente eligió hora */
+  function programado(){ return cerrado() || pedido.cuando === "hora" || pedido.modo === "retiro"; }
+
+  function diaDelPedido(){
+    return (cerrado() && proximaApertura().manana) ? (hoy + 1) % 7 : hoy;
+  }
+
   function horaMinima(){
     if(cerrado()) return proximaApertura().hora;
     return hhmm(new Date(Date.now() + minutosDemora() * 60000));
@@ -2131,7 +2153,7 @@
     var minHora = horaMinima();
     if(!pedido.hora || pedido.hora < minHora) pedido.hora = minHora;
     var esRetiro = pedido.modo === "retiro";
-    var pideHora = esRetiro || cerrado();
+    var pideHora = programado();
 
     var h = '<h3>Últimos datos</h3>';
     if(cerrado()){
@@ -2150,6 +2172,15 @@
          '<input class="campo" id="nombre" autocomplete="name" value="' +
          pedido.nombre.replace(/"/g, "&quot;") + '" placeholder="' +
          (esRetiro ? "Nombre para la reserva" : "Nombre y apellido") + '"></div>';
+
+    if(!esRetiro && !cerrado()){
+      h += '<div class="grupo"><p>¿Cuándo lo querés?</p><div class="chips">' +
+           '<button type="button" class="chip" data-grupo="cuando" data-unico="1" data-valor="ya" aria-pressed="' +
+           (pedido.cuando === "hora" ? "false" : "true") + '">Lo antes posible</button>' +
+           '<button type="button" class="chip" data-grupo="cuando" data-unico="1" data-valor="hora" aria-pressed="' +
+           (pedido.cuando === "hora" ? "true" : "false") + '">A una hora en particular</button>' +
+           '</div></div>';
+    }
 
     if(pideHora){
       h += '<div class="grupo"><p>' + (esRetiro ? "¿A qué hora lo pasás a buscar?" : "¿Para qué hora lo querés?") + '</p>' +
@@ -2263,8 +2294,10 @@
     }
     var total = subtotal() - desc + envio;
     var okPago = !!pedido.pago && pagoValido();
+    var prog = programado();
+    var horaFuera = !!(prog && pedido.hora && !dentroDeHorario(pedido.hora, diaDelPedido()));
     var horaPromoMal = false;
-    if(hayPromo() && (esRetiro || cerrado()) && pedido.hora){
+    if(hayPromo() && prog && pedido.hora){
       var hp = aDec(pedido.hora);
       horaPromoMal = hp < 12 || hp >= C.promoHorario.hasta;
     }
@@ -2276,9 +2309,9 @@
       retiro: esRetiro, nombre: pedido.nombre, zona: zona, envio: envio,
       pago: pedido.pago, desc: desc, hora: pedido.hora, total: total,
       cambio: pedido.cambio, paga: parseInt(pedido.paga, 10) || 0, barrio: pedido.barrio,
-      programado: cerrado(), manana: cerrado() && proximaApertura().manana,
-      horaPromoMal: horaPromoMal,
-      listo: !!(!horaPromoMal && pedido.nombre.trim() && okPago &&
+      programado: prog, manana: cerrado() && proximaApertura().manana,
+      horaPromoMal: horaPromoMal, horaFuera: horaFuera,
+      listo: !!(!horaPromoMal && !horaFuera && pedido.nombre.trim() && okPago &&
                 (esRetiro || (zona && (!zona.barrios || pedido.barrio))))
     };
   }
@@ -2298,6 +2331,12 @@
     h += '</div>';
     var r = $("#resumen", caja);
     if(r) r.innerHTML = h;
+    if(d.horaFuera){
+      var vv = ventanas(diaDelPedido()).map(function(t){ return t[0] + " a " + t[1]; }).join(" y de ");
+      h = '<p class="aviso alerta">A esa hora estamos cerrados. ' +
+          (diaDelPedido() === hoy ? "Hoy" : "Mañana") + ' atendemos de ' + vv + '.</p>' + h;
+      if(r) r.innerHTML = h;
+    }
     if(d.horaPromoMal){
       h = '<p class="aviso alerta">La promo del mediodía es de 12:00 a 16:00. Elegí una hora dentro de ese horario o sacá la promo del pedido.</p>' + h;
       if(r) r.innerHTML = h;
