@@ -1321,8 +1321,18 @@
     if((C.itemsAgotados && C.itemsAgotados.indexOf(b.dataset.id) >= 0) ||
        (hastaCuando && !vueltoYa)){
       b.disabled = true;
-      b.title = "Por ahora sin stock";
-      b.textContent = "Sin stock";
+      if(hastaCuando && !vueltoYa){
+        /* decir cuándo vuelve, para que no parezca que se terminó para siempre */
+        var dv = new Date(hastaCuando);
+        var mismoDia = dv.toDateString() === new Date().toDateString();
+        var hh = ("0" + dv.getHours()).slice(-2) + ":" + ("0" + dv.getMinutes()).slice(-2);
+        b.textContent = mismoDia ? "Vuelve hoy" : "Vuelve mañana";
+        b.title = "Se nos terminaron. Vuelven " +
+                  (mismoDia ? "hoy" : "mañana") + " a las " + hh + ".";
+      } else {
+        b.title = "Por ahora sin stock";
+        b.textContent = "Sin stock";
+      }
       b.classList.add("btn-agotado");
       var fila = b.closest(".fila");
       if(fila) fila.classList.add("item-agotado");
