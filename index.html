@@ -2511,9 +2511,9 @@
         var ab = C.frioAbre !== undefined ? C.frioAbre : 20;
         if(ahoraH >= ab || ahoraH < 2){
           var fr = $("#frio-rot", aviso), ft = $("#frio-txt", aviso);
-          if(fr) fr.textContent = "Ya estamos activos";
-          if(ft) ft.textContent = "Delivery, take away y en el local hasta las 00:00. " +
-                                  "Con este frío, te lo llevamos nosotros.";
+          if(fr) fr.textContent = "Hace frío · ya estamos activos";
+          if(ft) ft.textContent = "Afuera hace frío, pero nosotros salimos igual. " +
+                                  "Delivery, take away y en el local hasta las 00:00.";
         }
       }
       if(aviso && aviso.dataset.franja !== "lluvia"){
