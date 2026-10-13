@@ -17,6 +17,8 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -487,6 +489,12 @@
   .horario{font-family:'Anton',Impact,sans-serif;font-size:24px;text-transform:uppercase;line-height:1.2;padding-top:.05em}
   .contacto{margin-top:12px;font-size:16px;line-height:1.7}
   .contacto a{color:var(--verde);text-decoration:none;font-weight:600}
+  .datos{
+    margin-top:18px;max-width:62ch;
+    font-size:12.5px;line-height:1.55;color:var(--gris);
+  }
+  .datos b{color:var(--hueso);font-weight:700}
+  .datos a{color:var(--verde)}
   .lugar{margin-top:14px;font-size:14.5px;color:var(--gris)}
 
 
@@ -1441,6 +1449,13 @@
       <a href="https://instagram.com/kanthus_">@kanthus_</a>
     </p>
     <p class="lugar">Pinamar, Canelones · De noche te esperamos con la mesa de pool.</p>
+    <p class="datos">
+      <b>Tus datos.</b> Esta carta no tiene servidor propio: lo que elegís y escribís queda en tu
+      teléfono y recién sale cuando tocás enviar, por WhatsApp. Usamos tu nombre, tu teléfono y tu
+      dirección solo para prepararte y llevarte el pedido. No vendemos ni cedemos esos datos a nadie.
+      Si querés saber qué tenemos tuyo, corregirlo o que lo borremos, escribinos al
+      <a href="https://wa.me/59891899265">091 899 265</a>.
+    </p>
   </footer>
 
 </div>
@@ -1652,10 +1667,12 @@
     var mio = leerRef(MI_LLAVE);
     var par = new RegExp("[?&]de=([^&]*)").exec(location.search);
     var tel = new RegExp("[?&]tel=([^&]*)").exec(location.search);
+    var cif   = new RegExp("[?&]t=([^&]*)").exec(location.search);
     var sello = new RegExp("[?&]f=([^&]*)").exec(location.search);
-    if(par && sello){
-      var nom = decodeURIComponent(par[1].replace(/\+/g, " ")).trim().slice(0, 40);
-      var num = tel ? decodeURIComponent(tel[1]).replace(/[^0-9]/g, "").slice(0, 12) : "";
+    if((par && sello) && (tel || cif)){
+      var nom = limpiarNombre(decodeURIComponent(par[1].replace(/\+/g, " ")));
+      var num = tel ? decodeURIComponent(tel[1]).replace(/[^0-9]/g, "").slice(0, 12)
+                    : abrirTel(cif ? cif[1] : "");
       /* el sello tiene que cerrar: si no, el link lo escribió alguien a mano */
       var vale = nom && firma(nom, num) === sello[1];
       /* y no vale recomendarse a uno mismo */
@@ -1682,13 +1699,39 @@
     var caj = document.getElementById("vino-de");
     if(!caj || !vengoDe || !C.referidos) return;
     caj.className = "vino-de";
-    caj.innerHTML = '<p>Te recomendó ' + vengoDe.nombre + '</p>' + (vengoDe.nuevo
+    caj.innerHTML = '<p>Te recomendó ' + esc(vengoDe.nombre) + '</p>' + (vengoDe.nuevo
       ? '<b>Tenés ' + pesos(C.referidos.amigo) + ' de descuento en tu primer pedido</b>' +
         '<em>Se descuenta solo al cerrar el pedido, desde ' + pesos(C.referidos.minimo) + '.</em>'
       : '<b>Le vamos a avisar que viniste de su parte</b>' +
         '<em>La bienvenida de ' + pesos(C.referidos.amigo) +
         ' es para el primer pedido por la web.</em>');
   })();
+
+  /* del link solo entran letras y números: ni una etiqueta de HTML */
+  function limpiarNombre(s){
+    return String(s || "")
+      .replace(/[^0-9A-Za-zÁÉÍÓÚÜÑáéíóúüñ .'\-]/g, "")
+      .replace(/\s+/g, " ").trim().slice(0, 40);
+  }
+
+  /* y al escribirlo en la página se escapa igual, por las dudas */
+  function esc(s){
+    return String(s === undefined || s === null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  /* el teléfono no viaja a la vista en el link */
+  function cifrarTel(t){
+    return t ? Number("9" + t).toString(36) : "";
+  }
+  function abrirTel(c){
+    if(!c) return "";
+    var n = parseInt(c, 36);
+    if(!isFinite(n) || n <= 0) return "";
+    var s = String(n);
+    return s.charAt(0) === "9" ? s.slice(1) : "";
+  }
 
   /* un sello corto para que el link no se pueda inventar a mano */
   function firma(nombre, tel){
@@ -1704,18 +1747,20 @@
 
   function miLink(nombre, tel){
     return C.sitio + "?de=" + encodeURIComponent(nombre) +
-           (tel ? "&tel=" + encodeURIComponent(tel) : "") +
+           (tel ? "&t=" + cifrarTel(tel) : "") +
            "&f=" + firma(nombre, tel);
   }
 
   function abrirReferido(){
     var yo = leerRef(MI_LLAVE) || {nombre: "", tel: ""};
     abrir('<div id="ref-form"><h3>Armar mi link</h3>' +
-      '<p class="modal-sub">Lo necesitamos para saber a quién avisarle cuando su amigo pida.</p>' +
+      '<p class="modal-sub">Lo necesitamos para avisarte cuando tu amigo pida. ' +
+      'No lo publicamos en ningún lado ni se lo damos a nadie.</p>' +
       '<div class="grupo"><p>Tu nombre</p><input class="campo" id="ref-nombre" ' +
-        'placeholder="Como te conocemos" value="' + yo.nombre.replace(/"/g, "&quot;") + '"></div>' +
+        'placeholder="Como te conocemos" value="' + esc(yo.nombre) + '"></div>' +
       '<div class="grupo"><p>Tu WhatsApp</p><input class="campo" id="ref-tel" type="tel" ' +
-        'inputmode="numeric" placeholder="099 123 456" value="' + yo.tel + '"></div>' +
+        'inputmode="numeric" placeholder="099 123 456" value="' +
+        esc(String(yo.tel || "").replace(/[^0-9]/g, "")) + '"></div>' +
       '<p class="falta" id="ref-falta"></p>' +
       '<div class="modal-pie"><button class="btn-no" id="ref-cancelar">Cancelar</button>' +
       '<button class="btn-ok" id="ref-crear">Armar el link</button></div></div>');
@@ -1743,7 +1788,8 @@
         encodeURIComponent(invito) + '" target="_blank" rel="noopener">Compartir por WhatsApp</a>' +
       '<button type="button" id="refe-copiar">Copiar el link</button>' +
       '<p class="refe-letra">Cuando alguno estrene con tu link te escribimos a ese WhatsApp y te guardamos ' +
-        pesos(C.referidos.quienTrae) + ' para tu próximo pedido.</p>' +
+        pesos(C.referidos.quienTrae) + ' para tu próximo pedido. ' +
+        'Tu número va dentro del link en forma de código, no a la vista.</p>' +
       '<div class="modal-pie"><button class="btn-no" id="ref-cerrar">Listo</button></div></div>');
   }
 
@@ -1752,7 +1798,7 @@
   caja.addEventListener("click", function(e){
     if(e.target.id === "ref-cancelar" || e.target.id === "ref-cerrar"){ cerrar(); return; }
     if(e.target.id === "ref-crear" && !e.target.disabled){
-      var nom = $("#ref-nombre", caja).value.trim().slice(0, 40);
+      var nom = limpiarNombre($("#ref-nombre", caja).value);
       var tel = $("#ref-tel", caja).value.replace(/[^0-9]/g, "").slice(0, 12);
       anotarRef(MI_LLAVE, {nombre: nom, tel: tel});
       pantallaLink(nom, tel);
@@ -2787,7 +2833,7 @@
     if(d.desc) h += '<div class="total-fila ahorro"><span>' +
                     (descuentoHoy() ? descuentoHoy().texto : "5% off en box y combos") +
                     '</span><span>−' + pesos(d.desc) + '</span></div>';
-    if(d.dref) h += '<div class="total-fila ahorro"><span>Bienvenida de ' + vengoDe.nombre +
+    if(d.dref) h += '<div class="total-fila ahorro"><span>Bienvenida de ' + esc(vengoDe.nombre) +
                     '</span><span>−' + pesos(d.dref) + '</span></div>';
     if(d.retiro) h += '<div class="total-fila"><span>Retiro en el local</span><span>Sin costo</span></div>';
     else if(d.zona) h += '<div class="total-fila"><span>Envío</span><span>' +
