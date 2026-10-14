@@ -17,7 +17,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1450,9 +1450,10 @@
     </p>
     <p class="lugar">Pinamar, Canelones · De noche te esperamos con la mesa de pool.</p>
     <p class="datos">
-      <b>Tus datos.</b> Esta carta no tiene servidor propio: lo que elegís y escribís queda en tu
-      teléfono y recién sale cuando tocás enviar, por WhatsApp. Usamos tu nombre, tu teléfono y tu
-      dirección solo para prepararte y llevarte el pedido. No vendemos ni cedemos esos datos a nadie.
+      <b>Tus datos.</b> Cuando tocás enviar, guardamos una copia de tu pedido (lo que pediste, tu
+      nombre, tu zona, la forma de pago y, si lo ponés, tu celular) y se abre WhatsApp para mandárnoslo.
+      Lo usamos solo para prepararte y llevarte el pedido y para conocer mejor a nuestros clientes.
+      No vendemos ni cedemos esos datos a nadie.
       Si querés saber qué tenemos tuyo, corregirlo o que lo borremos, escribinos al
       <a href="https://wa.me/59891899265">091 899 265</a>.
     </p>
@@ -1475,7 +1476,7 @@
   var pendiente = null;
   var editando = null;
   var comentario = "";
-  var pedido = { modo:"delivery", nombre:"", zona:"", barrio:"", pago:"", hora:"", cambio:"", paga:"", cuando:"ya" };
+  var pedido = { modo:"delivery", nombre:"", tel:"", zona:"", barrio:"", pago:"", hora:"", cambio:"", paga:"", cuando:"ya" };
 
   var hoy = new Date().getDay();            // 0 domingo ... 6 sábado
   var ahoraH = new Date().getHours() + new Date().getMinutes() / 60;
@@ -2682,6 +2683,10 @@
          pedido.nombre.replace(/"/g, "&quot;") + '" placeholder="' +
          (esRetiro ? "Nombre para la reserva" : "Nombre y apellido") + '"></div>';
 
+    h += '<div class="grupo"><p>Tu celular <span class="modal-sub">(opcional)</span></p>' +
+         '<input class="campo" id="tel" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" value="' +
+         pedido.tel.replace(/[^\d+ ]/g, "") + '" placeholder="09X XXX XXX"></div>';
+
     if(!esRetiro && !cerrado()){
       h += '<div class="grupo"><p>¿Cuándo lo querés?</p><div class="chips">' +
            '<button type="button" class="chip" data-grupo="cuando" data-unico="1" data-valor="ya" aria-pressed="' +
@@ -2759,6 +2764,8 @@
 
     var n = $("#nombre", caja);
     if(n) n.addEventListener("input", function(){ pedido.nombre = n.value; resumen(); });
+    var tl = $("#tel", caja);
+    if(tl) tl.addEventListener("input", function(){ pedido.tel = tl.value; });
     var z = $("#zona", caja);
     if(z) z.addEventListener("change", function(){
       pedido.zona = z.value;
@@ -2907,11 +2914,38 @@
     try {
       localStorage.setItem(PED_LLAVE, String((parseInt(leerRef(PED_LLAVE), 10) || 0) + 1));
     } catch(err){}
+    guardarPedido(d);
     var texto = t.join("\n");
     var url = "https://wa.me/" + C.whatsapp + "?text=" + encodeURIComponent(texto);
     var ventana = null;
     try { ventana = window.open(url, "_blank"); } catch(err){ ventana = null; }
     envioManual(url, texto, !ventana);
+  }
+
+  // Copia del pedido para Kanthus (registro de pedidos y clientes). Si falla, WhatsApp sigue igual.
+  var PEDIDOS_URL = "https://script.google.com/macros/s/AKfycbw3HDYJxb7t4GgbJBBpKwJG7uelZB19Yujon7pk_auQvN30qMZCLHu79ee48wb2W28/exec", ultimoGuardado = "";
+  function guardarPedido(d){
+    try {
+      var p = {
+        v: 1, nombre: d.nombre.trim(), tel: (pedido.tel || "").trim(),
+        modo: d.retiro ? "retiro" : "delivery", zona: d.retiro ? "" : (d.barrio || d.zona.n),
+        hora: d.hora || "", programado: !!d.programado, manana: !!d.manana,
+        pago: d.pago, cambio: d.cambio || "", paga: d.paga || 0,
+        subtotal: subtotal(), descuento: d.desc || 0, descuentoRef: d.dref || 0,
+        envio: d.envio || 0, total: d.total, comentario: comentario.trim(),
+        referido: vengoDe ? vengoDe.nombre : "",
+        items: carrito.map(function(l){
+          return { cant: l.cant, nombre: l.nombre, precio: precioLinea(l), detalle: l.detalle.slice(),
+                   extras: (l.sueltos || l.extras).map(function(x){ return x.n; }) };
+        })
+      };
+      var cuerpo = JSON.stringify(p);
+      if(cuerpo === ultimoGuardado) return;   // mismo pedido tocado dos veces
+      ultimoGuardado = cuerpo;
+      if(navigator.sendBeacon && navigator.sendBeacon(PEDIDOS_URL, new Blob([cuerpo], {type: "text/plain"}))) return;
+      fetch(PEDIDOS_URL, {method: "POST", body: cuerpo, keepalive: true, headers: {"Content-Type": "text/plain"}})
+        .catch(function(){});
+    } catch(err){}
   }
 
   // Plan B: si el navegador bloquea la ventana nueva, se muestra un botón directo y la opción de copiar
