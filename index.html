@@ -783,6 +783,204 @@
     .nombre,.precio{font-size:17px}
   }
 </style>
+
+<script type="text/plain" id="css-halloween">
+  :root{
+    --naranja:#FF7A18;
+    --naranja-osc:#9c4405;
+    --morado:#7B4BD8;
+  }
+  body{background:#0A0806;position:relative}
+  .hoja{position:relative}
+
+  /* telarañas en las dos esquinas de arriba */
+  body::before,body::after{
+    content:"";position:absolute;top:0;width:190px;height:190px;z-index:30;
+    background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23F1F2EA' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M0 0 L200 0 M0 0 L0 200 M0 0 L200 200 M0 0 L140 200 M0 0 L200 140 M0 0 L70 200 M0 0 L200 70'/%3E%3Cpath d='M34 0 Q22 22 0 34 M68 0 Q46 46 0 68 M102 0 Q68 68 0 102 M136 0 Q92 92 0 136 M170 0 Q115 115 0 170'/%3E%3C/g%3E%3C/svg%3E") no-repeat;background-size:contain;
+    opacity:.17;pointer-events:none;
+  }
+  body::before{left:0}
+  body::after{right:0;transform:scaleX(-1)}
+
+  /* portada */
+  header,.carrusel{border-bottom:none !important}
+  .goteo{display:block;width:100%;height:26px;margin-top:-1px;position:relative;z-index:2}
+
+  .calabaza{
+    position:absolute;right:18px;bottom:74px;width:88px;z-index:3;
+    filter:drop-shadow(0 0 26px rgba(255,122,24,.6));
+  }
+  .aranas{position:absolute;left:0;right:0;top:0;height:300px;z-index:3;pointer-events:none}
+  .aranas img{position:absolute;top:0;filter:drop-shadow(0 3px 7px rgba(0,0,0,.95))}
+  .aranas img:nth-child(1){width:46px;right:11%}
+  .aranas img:nth-child(2){width:30px;right:30%;opacity:.8;transform:scaleY(.72);transform-origin:top}
+  .aranas img:nth-child(3){display:none}
+
+  /* títulos en naranja, precios en verde: la plata se sigue leyendo igual */
+  .titulo{color:var(--naranja)}
+  .titulo .k{color:var(--verde)}
+  .titulo.inv{color:var(--verde)}
+  .titulo.inv .k{color:var(--naranja)}
+  .rubro,.confian-tit,.horarios-tit{color:#c0803f}
+  .promo-titulo,.pizza-frase{color:var(--naranja)}
+  .promo-dias,.rotulo{color:var(--naranja)}
+  .slide h2{color:var(--hueso)}
+
+  .promo{border-color:var(--naranja-osc)}
+  .promo-item b{color:var(--hueso)}
+  .guia{border-bottom-color:#6b4418}
+  .grilla a{border-color:#3a2a16}
+  .grilla a:hover,.grilla a:focus-visible{background:var(--naranja);color:#140b03;border-color:var(--naranja)}
+  nav a:hover,nav a:focus-visible{background:var(--naranja);color:#140b03;border-color:var(--naranja)}
+  .solo-dias{color:var(--naranja);border-color:var(--naranja-osc)}
+
+  /* telarañas chicas en cada sección */
+  section{position:relative}
+  section > .titulo::after{
+    content:"";position:absolute;right:0;top:-6px;width:74px;height:74px;
+    background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23F1F2EA' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M0 0 L200 0 M0 0 L0 200 M0 0 L200 200 M0 0 L140 200 M0 0 L200 140 M0 0 L70 200 M0 0 L200 70'/%3E%3Cpath d='M34 0 Q22 22 0 34 M68 0 Q46 46 0 68 M102 0 Q68 68 0 102 M136 0 Q92 92 0 136 M170 0 Q115 115 0 170'/%3E%3C/g%3E%3C/svg%3E") no-repeat;background-size:contain;
+    transform:scaleX(-1);opacity:.15;pointer-events:none;
+  }
+  footer{position:relative}
+  footer::before,footer::after{
+    content:"";position:absolute;top:-10px;width:120px;height:120px;
+    background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23F1F2EA' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M0 0 L200 0 M0 0 L0 200 M0 0 L200 200 M0 0 L140 200 M0 0 L200 140 M0 0 L70 200 M0 0 L200 70'/%3E%3Cpath d='M34 0 Q22 22 0 34 M68 0 Q46 46 0 68 M102 0 Q68 68 0 102 M136 0 Q92 92 0 136 M170 0 Q115 115 0 170'/%3E%3C/g%3E%3C/svg%3E") no-repeat;background-size:contain;
+    opacity:.14;pointer-events:none;
+  }
+  footer::before{left:-14px}
+  footer::after{right:-14px;transform:scaleX(-1)}
+
+  .zombi-pie{
+    display:block;width:188px;margin:30px auto 4px;
+    filter:drop-shadow(0 10px 26px rgba(0,0,0,.9)) drop-shadow(0 0 30px rgba(255,122,24,.22));
+  }
+  .zombi-pie-txt{
+    text-align:center;font-size:12.5px;letter-spacing:.17em;text-transform:uppercase;
+    color:#8a6a3f;margin-top:-4px;
+  }
+
+  /* el zombi que cruza el fondo */
+  .zombi{
+    position:fixed;bottom:0;left:-180px;width:118px;z-index:0;
+    opacity:.6;pointer-events:none;
+    filter:drop-shadow(0 0 22px rgba(255,122,24,.18));
+    animation:caminar 46s linear infinite;
+  }
+  @keyframes caminar{
+    0%{transform:translateX(0) rotate(-3deg)}
+    49%{transform:translateX(60vw) rotate(3deg)}
+    50%{transform:translateX(61vw) rotate(-3deg)}
+    100%{transform:translateX(130vw) rotate(3deg)}
+  }
+
+  /* la mano que sale cuando agregás algo */
+  .mano{
+    position:fixed;right:18px;bottom:-200px;width:104px;z-index:41;
+    pointer-events:none;filter:drop-shadow(0 -6px 14px rgba(0,0,0,.8));
+  }
+  .mano.sale{animation:manotazo 1.5s cubic-bezier(.2,.9,.3,1)}
+  @keyframes manotazo{
+    0%{bottom:-200px;transform:rotate(-14deg)}
+    28%{bottom:52px;transform:rotate(6deg)}
+    42%{bottom:40px;transform:rotate(-4deg)}
+    62%{bottom:48px;transform:rotate(2deg)}
+    100%{bottom:-200px;transform:rotate(-14deg)}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .zombi{animation:none;left:-170px}
+    .mano.sale{animation:none}
+  }
+
+  /* botones y carrito */
+  .boton{background:var(--naranja);color:#140b03}
+  .boton:hover,.boton:focus-visible{background:#ff9140}
+  .add{border-color:var(--naranja-osc);color:var(--naranja)}
+  .add:hover,.add:focus-visible{background:var(--naranja);color:#140b03;border-color:var(--naranja)}
+  .add-promo{background:var(--naranja);color:#140b03}
+  .add-promo:hover{background:#ff9140}
+  .barra{background:var(--naranja);color:#140b03}
+  .barra button{background:#140b03;color:var(--naranja)}
+  .modal-caja{border-top-color:var(--naranja)}
+  .modal-caja h3{color:var(--naranja)}
+  .btn-ok{background:var(--naranja);color:#140b03}
+  footer{border-top-color:var(--naranja)}
+  .cta{border-color:#3a2a16}
+
+  /* lo que el tema base pinta de verde y con el tema tiene que ir naranja.
+     Los precios y los montos quedan verdes a propósito: la plata se lee igual. */
+  .slide .boton-add{background:var(--naranja);color:#140b03}
+  .slide .boton-add:hover,
+  .slide .boton-add:focus-visible{background:#ff9140;color:#140b03;border:none}
+  .puntos button[aria-current="true"]{background:var(--naranja)}
+  .pdia-rotulo i,.refe-rot i{background:var(--naranja)}
+  .pdia-off{background:var(--naranja);color:#140b03}
+  #refe-armar{background:var(--naranja);color:#140b03}
+  #refe-armar:hover,#refe-armar:focus-visible{background:#ff9140;color:#140b03}
+</script>
+<script>
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  TEMA DE HALLOWEEN                                               ║
+   ║  Se prende y se apaga solo. Para correr las fechas, tocá las dos ║
+   ║  líneas de abajo y nada más. Fuera de esa ventana la carta no    ║
+   ║  carga ni un estilo ni un adorno del tema: queda la de siempre.  ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
+(function(){
+  var DESDE = "2026-10-30T00:00:00-03:00";
+  var HASTA = "2026-11-01T00:00:00-03:00";
+
+  var ahora = new Date();
+  if(ahora < new Date(DESDE) || ahora >= new Date(HASTA)) return;
+
+  /* el CSS entra antes de que se pinte la página, así no hay parpadeo */
+  var guardado = document.getElementById("css-halloween");
+  var hoja = document.createElement("style");
+  hoja.textContent = guardado.textContent;
+  document.head.appendChild(hoja);
+  document.documentElement.className += " halloween";
+
+  var CALABAZA = "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 110'%3E%3Cpath d='M60 18 C58 10 62 4 70 2 C66 8 68 14 62 18Z' fill='%236d8a1f'/%3E%3Cellipse cx='32' cy='64' rx='26' ry='42' fill='%23e8690f'/%3E%3Cellipse cx='88' cy='64' rx='26' ry='42' fill='%23e8690f'/%3E%3Cellipse cx='60' cy='64' rx='36' ry='44' fill='%23FF7A18'/%3E%3Cpath d='M34 52 L50 52 L42 66Z' fill='%231a0c02'/%3E%3Cpath d='M86 52 L70 52 L78 66Z' fill='%231a0c02'/%3E%3Cpath d='M38 80 L46 74 L54 80 L62 74 L70 80 L78 74 L84 80 L78 90 L70 86 L62 92 L54 86 L46 90Z' fill='%231a0c02'/%3E%3C/svg%3E";
+  var ARANA    = "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 190'%3E%3Cpath d='M40 0 V104' stroke='%238d8d8d' stroke-width='1.6' fill='none'/%3E%3Cg stroke='%23191622' stroke-width='5' fill='none' stroke-linecap='round'%3E%3Cpath d='M30 128 C14 120 8 134 4 146'/%3E%3Cpath d='M29 140 C13 138 7 152 6 166'/%3E%3Cpath d='M31 152 C18 156 14 168 15 180'/%3E%3Cpath d='M34 118 C22 106 14 108 8 114'/%3E%3Cpath d='M50 128 C66 120 72 134 76 146'/%3E%3Cpath d='M51 140 C67 138 73 152 74 166'/%3E%3Cpath d='M49 152 C62 156 66 168 65 180'/%3E%3Cpath d='M46 118 C58 106 66 108 72 114'/%3E%3C/g%3E%3Ccircle cx='40' cy='116' r='13' fill='%23191622'/%3E%3Cellipse cx='40' cy='146' rx='19' ry='23' fill='%23191622'/%3E%3Ccircle cx='35' cy='113' r='3.4' fill='%23FF7A18'/%3E%3Ccircle cx='45' cy='113' r='3.4' fill='%23FF7A18'/%3E%3C/svg%3E";
+  var ZOMBI    = "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 200'%3E%3Cg fill='%23161b14'%3E%3Cpath d='M64 114 L80 116 C79 140 71 160 60 176 L67 187 L46 191 C44 175 55 150 62 132Z'/%3E%3Cpath d='M82 114 L97 114 C100 138 100 158 97 173 L113 184 L93 191 C86 173 82 151 80 130Z'/%3E%3Cpath d='M64 57 C49 76 53 103 63 121 L67 109 L73 126 L80 107 L86 124 L92 106 L97 119 C101 95 97 70 86 53Z'/%3E%3Cpath d='M76 70 C94 76 112 85 127 94 L122 104 C106 95 88 87 72 81Z'/%3E%3Cpath d='M84 56 C103 58 122 62 137 67 L135 79 C118 74 99 70 80 67Z'/%3E%3Cpath d='M81 46 L96 44 L98 58 L83 60Z'/%3E%3Cellipse cx='99' cy='33' rx='16' ry='18' transform='rotate(16 99 33)'/%3E%3Cpath d='M96 46 C105 51 113 48 116 42 L112 56 C103 59 96 54 96 46Z'/%3E%3Cpath d='M85 19 C91 7 109 5 118 13 C107 11 93 15 85 23Z'/%3E%3C/g%3E%3Ccircle cx='101' cy='29' r='3.1' fill='%23FF7A18'/%3E%3Ccircle cx='110' cy='31' r='3.1' fill='%23FF7A18'/%3E%3C/svg%3E";
+  var MANO     = "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 190'%3E%3Cg fill='%236f8a3c'%3E%3Cpath d='M38 96 L84 96 L90 190 L32 190Z'/%3E%3Cpath d='M30 84 C30 74 46 74 46 84 L46 106 L30 106Z'/%3E%3Cpath d='M50 62 C50 50 68 50 68 62 L68 106 L50 106Z'/%3E%3Cpath d='M72 70 C72 58 90 58 90 70 L90 108 L72 108Z'/%3E%3Cpath d='M94 86 C94 76 110 76 110 86 L110 112 L94 112Z'/%3E%3Cpath d='M26 108 C14 102 6 112 14 122 L34 134 L42 118Z'/%3E%3C/g%3E%3Cg stroke='%233f5420' stroke-width='3' fill='none' stroke-linecap='round'%3E%3Cpath d='M44 120 L62 128 M76 118 L92 126 M52 150 L70 158'/%3E%3C/g%3E%3C/svg%3E";
+
+  function adornar(){
+    var carrusel = document.getElementById("carrusel");
+    if(carrusel) carrusel.insertAdjacentHTML("beforeend",
+      '<img class="calabaza" src="' + CALABAZA + '" alt="">' +
+      '<div class="aranas"><img src="' + ARANA + '" alt="">' +
+      '<img src="' + ARANA + '" alt=""></div>');
+
+    var cabecera = document.querySelector("header");
+    if(cabecera) cabecera.insertAdjacentHTML("afterend", "<svg class=\"goteo\" viewBox=\"0 0 1200 26\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><path fill=\"#FF7A18\" d=\"M0 0h1200v7H0z\"/><path fill=\"#FF7A18\" d=\"M70 7c0 9 10 9 10 0zM150 7c0 15 11 15 11 0zM245 7c0 7 9 7 9 0zM330 7c0 19 12 19 12 0zM430 7c0 9 10 9 10 0zM540 7c0 14 11 14 11 0zM640 7c0 8 9 8 9 0zM735 7c0 17 12 17 12 0zM840 7c0 10 10 10 10 0zM935 7c0 15 11 15 11 0zM1040 7c0 8 9 8 9 0zM1130 7c0 18 12 18 12 0z\"/></svg>");
+
+    var pie = document.querySelector("footer");
+    if(pie) pie.insertAdjacentHTML("beforebegin",
+      '<img class="zombi-pie" src="' + ZOMBI + '" alt="">' +
+      '<p class="zombi-pie-txt">Feliz Halloween</p>');
+
+    document.body.insertAdjacentHTML("beforeend",
+      '<img class="zombi" src="' + ZOMBI + '" alt="" aria-hidden="true">' +
+      '<img class="mano" id="mano-zombi" src="' + MANO + '" alt="" aria-hidden="true">');
+
+    /* la mano sale recién cuando el producto entró al carrito */
+    var mano = document.getElementById("mano-zombi"), ocupada = false;
+    document.addEventListener("click", function(e){
+      if(!e.target.closest || !e.target.closest("#confirmar:not([disabled])")) return;
+      setTimeout(function(){
+        if(ocupada) return;
+        ocupada = true;
+        mano.classList.add("sale");
+        setTimeout(function(){ mano.classList.remove("sale"); ocupada = false; }, 1600);
+      }, 280);
+    });
+  }
+
+  if(document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", adornar);
+  else adornar();
+})();
+</script>
 </head>
 <body>
 
