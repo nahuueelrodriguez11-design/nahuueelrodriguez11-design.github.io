@@ -843,12 +843,6 @@
   /* El atardecer está a la izquierda de la foto y los edificios a la derecha.
      Con el recorte al medio, en un celular se veía la parte menos linda. */
   .gamer .slide[data-franja="gamer"]{ background-position:26% center }
-  /* la trama de barrido, solo acá: sobre la carta estorbaría para leer */
-  .gamer .slide[data-franja="gamer"]::after{
-    content:""; position:absolute; inset:0; pointer-events:none; z-index:2;
-    background:repeating-linear-gradient(0deg,
-      rgba(255,255,255,.05) 0 1px, rgba(255,255,255,0) 1px 4px);
-  }
   .gamer .slide[data-franja="gamer"] > *{ position:relative; z-index:3 }
   .gamer .slide[data-franja="gamer"] .rotulo{ color:var(--vc-naranja) }
   .gamer .slide[data-franja="gamer"] h2{
