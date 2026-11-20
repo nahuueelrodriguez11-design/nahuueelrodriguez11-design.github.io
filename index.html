@@ -3769,7 +3769,8 @@
       })();
 
       var AVISOS = [
-        {f: "solonoche",  activo: !!soloNocheHoy(), desde: C.soloNoche && C.soloNoche.desde, hasta: C.soloNoche && C.soloNoche.hasta},
+        /* se baja solo al abrir: después de eso ya no evita ningún viaje */
+        {f: "solonoche",  activo: !!soloNocheHoy() && !abierto(), desde: C.soloNoche && C.soloNoche.desde, hasta: C.soloNoche && C.soloNoche.hasta},
         {f: "gamer", activo: modoGamer(), desde: C.gamer && C.gamer.desde, hasta: C.gamer && C.gamer.hasta},
         /* no encabeza: lo que se vende son las hamburguesas y las
            milanesas, la pizza acompaña */
