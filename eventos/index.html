@@ -5,90 +5,312 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Kanthus Eventos · Propuesta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
+/* Mismas variables, fuentes y proporciones que kanthus.com, para que esto no
+   parezca otra web. Los bordes de 3px y el filete verde arriba de cada panel
+   son la firma de la carta. */
+:root{
+  --negro:#070806;
+  --carbon:#121410;
+  --linea:#25291f;
+  --verde:#9BE01B;
+  --verde-osc:#5c8710;
+  --hueso:#F1F2EA;
+  --gris:#8C9182;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0d0d0d;color:#f2f2f2;line-height:1.5}
-.k{color:#2ecc71}
-#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.box{background:#181818;border:1px solid #2a2a2a;border-radius:18px;padding:32px;max-width:380px;width:100%;text-align:center}
-.box h1{font-size:28px;margin-bottom:6px}
-.box p{color:#aaa;margin-bottom:20px}
-input{width:100%;padding:14px;border-radius:10px;border:1px solid #333;background:#0d0d0d;color:#fff;font-size:16px;text-align:center;text-transform:uppercase;letter-spacing:2px}
-button{cursor:pointer;border:none;border-radius:10px;font-weight:700;font-size:16px}
-.btn{width:100%;margin-top:12px;padding:14px;background:#2ecc71;color:#0d0d0d}
-.err{color:#ff6b6b;margin-top:10px;min-height:20px;font-size:14px}
-#app{display:none;max-width:980px;margin:0 auto;padding:28px 18px 60px}
-header{text-align:center;margin-bottom:28px}
-header h1{font-size:34px;letter-spacing:1px}
-header p{color:#aaa}
-.tag{display:inline-block;background:#1e2a22;color:#2ecc71;padding:4px 12px;border-radius:20px;font-size:13px;margin-bottom:10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
-.card{background:#181818;border:2px solid #2a2a2a;border-radius:16px;padding:20px;cursor:pointer;transition:.2s;position:relative}
-.card:hover{transform:translateY(-3px);border-color:#444}
-.card.sel{border-color:#2ecc71}
-.card.star{border-color:#2ecc71;background:linear-gradient(160deg,#1b2a20,#181818)}
-.badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#2ecc71;color:#0d0d0d;font-size:12px;font-weight:800;padding:4px 12px;border-radius:20px;white-space:nowrap}
-.card h3{font-size:18px;margin:6px 0}
-.price{font-size:26px;font-weight:800;color:#2ecc71}
-.small{color:#999;font-size:13px}
-#detail{margin-top:24px;background:#181818;border-radius:16px;padding:24px;border:1px solid #2a2a2a}
-#detail h2{margin-bottom:10px}
-#detail ul{list-style:none;margin:12px 0}
-#detail li{padding:8px 0;border-bottom:1px solid #262626;display:flex;justify-content:space-between;gap:12px}
-#detail li span:last-child{white-space:nowrap;color:#ccc}
-.total{font-size:22px;font-weight:800;margin-top:10px}
-.save{background:#1e2a22;color:#2ecc71;border-radius:10px;padding:12px;margin-top:14px}
-.extra{margin-top:28px;text-align:center;color:#aaa;font-size:14px}
-.wa{display:inline-block;margin-top:18px;background:#25d366;color:#0d0d0d;padding:14px 22px;border-radius:12px;font-weight:800;text-decoration:none}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  background:var(--negro);
+  color:var(--hueso);
+  font-family:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:17px;
+  line-height:1.45;
+}
+.hoja{max-width:600px;margin:0 auto;padding:0 20px}
+
+.rotulo{
+  font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--verde);
+}
+.rubro{
+  margin-top:44px;
+  font-family:'Anton',Impact,'Arial Narrow',sans-serif;
+  font-size:15px;line-height:1.3;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gris);
+  padding-bottom:9px;border-bottom:1px solid var(--linea);
+}
+.nota-seccion{margin-top:6px;font-size:14.5px;color:var(--gris);max-width:52ch}
+h1,h2{
+  font-family:'Anton',Impact,'Arial Narrow',sans-serif;
+  text-transform:uppercase;font-weight:400;line-height:1.16;padding-top:.06em;
+}
+.boton{
+  display:inline-block;
+  background:var(--verde);
+  color:var(--negro);
+  text-decoration:none;
+  font-weight:700;font-size:16px;
+  padding:12px 22px;border-radius:3px;
+  border:none;font-family:inherit;cursor:pointer;
+}
+
+/* ---------- la puerta ---------- */
+#puerta{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px 20px}
+.caja{
+  background:var(--carbon);
+  border:1px solid var(--linea);
+  border-top:3px solid var(--verde);
+  border-radius:3px;
+  padding:34px 24px 28px;
+  max-width:400px;width:100%;text-align:center;
+}
+.caja img{width:150px;max-width:70%;height:auto;display:block;margin:0 auto 20px}
+.caja h1{font-size:26px;margin-top:8px}
+.caja .ayuda{margin-top:10px;font-size:15px;color:var(--gris)}
+#codigo{
+  width:100%;margin-top:22px;padding:14px;
+  border-radius:3px;border:1px solid var(--linea);
+  background:var(--negro);color:var(--hueso);
+  font-family:inherit;font-size:17px;font-weight:700;
+  text-align:center;text-transform:uppercase;letter-spacing:.18em;
+}
+#codigo:focus{outline:none;border-color:var(--verde-osc)}
+#codigo::placeholder{color:var(--gris);letter-spacing:.18em;font-weight:400}
+#entrar{width:100%;margin-top:12px}
+.error{color:#ff6b6b;margin-top:12px;min-height:21px;font-size:14.5px}
+
+/* ---------- la propuesta ---------- */
+#app{display:none;padding-bottom:3rem}
+header{
+  padding:34px 0 26px;
+  border-bottom:3px solid var(--verde);
+  text-align:center;
+}
+header img{width:210px;max-width:76%;height:auto;display:block;margin:0 auto 18px}
+header h1{font-size:clamp(26px,7.4vw,36px);margin-top:10px}
+.bajada{margin-top:14px;font-size:15px;color:var(--gris);font-style:italic}
+
+.grilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}
+.opcion{
+  position:relative;text-align:left;
+  background:var(--carbon);
+  border:1px solid var(--linea);
+  border-radius:3px;
+  padding:18px 16px 15px;
+  font-family:inherit;color:var(--hueso);
+  cursor:pointer;
+  transition:border-color .15s, transform .15s;
+}
+/* Solo donde hay puntero de verdad: en el celular el :hover se queda pegado
+   después de tocar y deja una tarjeta pareciendo elegida sin serlo. */
+@media (hover:hover){
+  .opcion:hover{transform:translateY(-2px);border-color:var(--verde-osc)}
+}
+.opcion[aria-pressed="true"]{border-color:var(--verde)}
+.opcion.destacada{border-color:var(--verde-osc);margin-top:14px}
+.opcion.destacada[aria-pressed="true"]{border-color:var(--verde)}
+.insignia{
+  position:absolute;top:-11px;left:16px;
+  background:var(--verde);color:var(--negro);
+  font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 10px;border-radius:3px;white-space:nowrap;
+}
+.opcion .nombre{display:block;font-weight:700;font-size:19px;line-height:1.25}
+.opcion .precio{
+  display:block;margin-top:8px;
+  font-weight:700;font-size:26px;color:var(--verde);
+  font-variant-numeric:tabular-nums;
+}
+.opcion .porpersona{display:block;margin-top:2px;font-size:14px;color:var(--gris)}
+/* La pista de que la tarjeta se toca. Sin esto parecían carteles. Va en
+   minúscula y liviana a propósito: en mayúscula le ganaba al precio, que es
+   lo que la persona tiene que mirar primero. */
+.tocar{
+  display:block;margin-top:12px;padding-top:11px;
+  border-top:1px solid var(--linea);
+  font-size:14px;font-weight:600;line-height:1.3;
+  color:var(--verde);
+}
+.tocar::after{content:" ›";font-weight:700}
+
+#detalle{
+  margin-top:26px;
+  background:var(--carbon);
+  border:1px solid var(--linea);
+  border-top:3px solid var(--verde);
+  border-radius:3px;
+  padding:22px 20px 26px;
+}
+#detalle h2{font-size:22px}
+.incluye{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gris);margin-top:16px}
+#detalle ul{list-style:none;margin:8px 0 0}
+#detalle li{
+  padding:11px 0;border-bottom:1px solid var(--linea);
+  display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+  font-size:15.5px;
+}
+#detalle li span:last-child{
+  white-space:nowrap;font-weight:700;color:var(--verde);
+  font-variant-numeric:tabular-nums;
+}
+.total{
+  margin-top:16px;font-weight:700;font-size:21px;
+  display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+}
+.total span:last-child{color:var(--verde);font-variant-numeric:tabular-nums;white-space:nowrap}
+.destaque{
+  margin-top:16px;padding:13px 15px;
+  background:rgba(155,224,27,.1);border-left:3px solid var(--verde);border-radius:3px;
+  font-size:14.5px;line-height:1.45;
+}
+.empujon{
+  margin-top:14px;padding:13px 15px;
+  background:rgba(229,163,60,.1);border-left:3px solid #E5A33C;border-radius:3px;
+  font-size:14.5px;line-height:1.45;
+  width:100%;text-align:left;font-family:inherit;color:var(--hueso);
+  border-top:none;border-right:none;border-bottom:none;cursor:pointer;
+}
+
+.letra-chica{margin-top:12px}
+.letra-chica li{
+  list-style:none;padding:11px 0;border-bottom:1px solid var(--linea);
+  font-size:15px;color:var(--hueso);
+}
+.letra-chica li b{color:var(--verde);font-weight:700}
+.cierre{margin-top:26px;text-align:center}
+.cierre .boton{font-size:17px;padding:14px 26px}
+.cierre p{margin-top:12px;font-size:14px;color:var(--gris)}
 </style>
 </head>
 <body>
-<div id="gate"><div class="box">
-<h1><span class="k">K</span>ANTHUS</h1>
-<p>Propuesta privada para tu evento.<br>Ingresá el código que te pasamos.</p>
-<input id="code" placeholder="CÓDIGO" onkeydown="if(event.key==='Enter')enter()">
-<button class="btn" onclick="enter()">Ver propuesta</button>
-<div class="err" id="err"></div>
+
+<div id="puerta"><div class="caja">
+  <img src="logo.png" alt="Kanthus" width="1200" height="393">
+  <p class="rotulo">Propuesta privada</p>
+  <h1>Eventos en Kanthus</h1>
+  <p class="ayuda">Ingresá el código que te pasamos para ver las opciones del salón.</p>
+  <input id="codigo" placeholder="CÓDIGO" autocomplete="off" autocapitalize="characters" spellcheck="false">
+  <button class="boton" id="entrar" type="button">Ver la propuesta</button>
+  <p class="error" id="error" role="alert"></p>
 </div></div>
 
 <div id="app">
-<header>
-<div class="tag">Cumpleaños de 15 · aprox. 50 personas</div>
-<h1><span class="k">K</span>ANTHUS EVENTOS</h1>
-<p>Elegí una opción para ver todo lo que incluye. Precios en pesos uruguayos.</p>
-</header>
-<div class="grid" id="grid"></div>
-<div id="detail"></div>
-<div class="extra">
-Limpieza posterior al evento: opcional, $1.500 (si la hacen ustedes, no se cobra).<br>
-<b class="k">En la Fiesta Kanthus Completa la limpieza va de regalo.</b><br>
-Cupos limitados: propuesta especial por lanzamiento del salón.<br>
-<a class="wa" href="https://wa.me/59891899265?text=Hola!%20Vimos%20la%20propuesta%20de%20eventos%20de%20Kanthus%20y%20queremos%20reservar" target="_blank">Reservar por WhatsApp</a>
-</div>
+  <header>
+    <div class="hoja">
+      <img src="logo.png" alt="Kanthus" width="1200" height="393">
+      <p class="rotulo">Cumpleaños de 15 · aprox. 50 personas</p>
+      <h1>Eventos en Kanthus</h1>
+      <p class="bajada">Precios en pesos uruguayos. Propuesta especial por lanzamiento del salón.</p>
+    </div>
+  </header>
+
+  <div class="hoja">
+    <p class="rubro">Las opciones</p>
+    <p class="nota-seccion">Tocá cualquiera para ver todo lo que incluye y el total.</p>
+    <div class="grilla" id="grilla"></div>
+    <div id="detalle"></div>
+
+    <p class="rubro">Para tener en cuenta</p>
+    <ul class="letra-chica">
+      <li>Limpieza posterior al evento: opcional, <b>$1.500</b>. Si la hacen ustedes, no se cobra.</li>
+      <li>En la <b>Fiesta Kanthus Completa</b> la limpieza va de regalo.</li>
+      <li>Cupos limitados: propuesta especial por lanzamiento del salón.</li>
+    </ul>
+
+    <div class="cierre">
+      <a class="boton" href="https://wa.me/59891899265?text=Hola!%20Vimos%20la%20propuesta%20de%20eventos%20de%20Kanthus%20y%20queremos%20reservar" target="_blank" rel="noopener">Reservar por WhatsApp</a>
+      <p>Te contestamos y coordinamos la fecha.</p>
+    </div>
+  </div>
 </div>
 
 <script>
-const CODES=["FIESTA15","KANTHUSEVENTOS"];
-function enter(){
- const v=document.getElementById('code').value.trim().toUpperCase().replace(/\s+/g,'');
- if(CODES.includes(v)){document.getElementById('gate').style.display='none';document.getElementById('app').style.display='block';render(2);}
- else document.getElementById('err').textContent='Código incorrecto. Probá de nuevo.';
-}
-const burger=["50 hamburguesas Doble cuarto con papas (doble carne, cheddar, panceta, cebolla y salsas, en pan de queso)","$19.250"];
-const pizza=["10 metros de pizza: muzzarella sola o solo salsa $350/m · con gusto (panceta, jamón o aceitunas) $400/m","$3.500 a $4.000"];
-const drinks=["20 refrescos de 2,5 L línea Pepsi (Pepsi, 7up y Mirinda)","$4.000"];
-const salonC=["Salón con mesas (precio especial con catering)","$4.000"];
-const opts=[
- {n:"Solo salón",p:"$7.000",s:"Ustedes traen la comida",items:[["Salón con mesas","$7.000"]],t:"$7.000"},
- {n:"Salón + hamburguesas",p:"$23.250",s:"aprox. $465 por persona",items:[salonC,burger],t:"$23.250"},
- {n:"Fiesta Kanthus Completa",star:1,p:"desde $30.750",s:"aprox. $615 a $625 por persona",items:[salonC,burger,pizza,drinks,["Limpieza posterior","DE REGALO"]],t:"$30.750 a $31.250",save:"No se ocupan de nada: salón, comida y bebida resueltos. Se ahorran más de $7.750 frente a contratar todo por separado, y la limpieza va de regalo."},
- {n:"Salón + hamburguesas y pizzas",p:"desde $26.750",s:"sin bebidas · aprox. $535 a $545 por persona",items:[salonC,burger,pizza],t:"$26.750 a $27.250"}
-];
-function render(i){
- document.getElementById('grid').innerHTML=opts.map((o,k)=>`<div class="card ${o.star?'star':''} ${k===i?'sel':''}" onclick="render(${k})">${o.star?'<div class="badge">⭐ LA MÁS ELEGIDA</div>':''}<h3>${o.n}</h3><div class="price">${o.p}</div><div class="small">${o.s}</div></div>`).join('');
- const o=opts[i];
- document.getElementById('detail').innerHTML=`<h2>${o.star?'⭐ ':''}${o.n}</h2><div class="small">Qué incluye:</div><ul>${o.items.map(x=>`<li><span>${x[0]}</span><span>${x[1]}</span></li>`).join('')}</ul><div class="total">Total: <span class="k">${o.t}</span></div>${o.save?`<div class="save">${o.save}</div>`:''}${!o.star?`<div class="save" style="cursor:pointer" onclick="render(2)">💡 Por poco más, la <b>Fiesta Kanthus Completa</b> suma pizzas, bebidas y la limpieza de regalo. Tocá para verla.</div>`:''}`;
-}
+(function(){
+  "use strict";
+
+  var CODIGOS = ["FIESTA15", "KANTHUSEVENTOS"];
+
+  var burger = ["50 hamburguesas Doble cuarto con papas (doble carne, cheddar, panceta, cebolla y salsas, en pan de queso)", "$19.250"];
+  var pizza  = ["10 metros de pizza: muzzarella sola o solo salsa $350/m · con gusto (panceta, jamón o aceitunas) $400/m", "$3.500 a $4.000"];
+  var drinks = ["20 refrescos de 2,5 L línea Pepsi (Pepsi, 7up y Mirinda)", "$4.000"];
+  var salonC = ["Salón con mesas (precio especial con catering)", "$4.000"];
+
+  var opts = [
+    {n:"Solo salón", p:"$7.000", s:"Ustedes traen la comida",
+     items:[["Salón con mesas","$7.000"]], t:"$7.000"},
+    {n:"Salón + hamburguesas", p:"$23.250", s:"aprox. $465 por persona",
+     items:[salonC, burger], t:"$23.250"},
+    {n:"Fiesta Kanthus Completa", star:1, p:"desde $30.750", s:"aprox. $615 a $625 por persona",
+     items:[salonC, burger, pizza, drinks, ["Limpieza posterior","DE REGALO"]],
+     t:"$30.750 a $31.250",
+     save:"No se ocupan de nada: salón, comida y bebida resueltos. Se ahorran más de $7.750 frente a contratar todo por separado, y la limpieza va de regalo."},
+    {n:"Salón + hamburguesas y pizzas", p:"desde $26.750", s:"sin bebidas · aprox. $535 a $545 por persona",
+     items:[salonC, burger, pizza], t:"$26.750 a $27.250"}
+  ];
+
+  var DESTACADA = 2;   // la Fiesta Completa: con la que abre y a la que empuja
+
+  var $ = function(id){ return document.getElementById(id); };
+  function texto(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function pintar(i){
+    var grilla = $("grilla");
+    grilla.innerHTML = opts.map(function(o, k){
+      return '<button type="button" class="opcion' + (o.star ? ' destacada' : '') +
+             '" data-i="' + k + '" aria-pressed="' + (k === i) + '">' +
+             (o.star ? '<span class="insignia">La más elegida</span>' : '') +
+             '<span class="nombre">' + texto(o.n) + '</span>' +
+             '<span class="precio">' + texto(o.p) + '</span>' +
+             '<span class="porpersona">' + texto(o.s) + '</span>' +
+             '<span class="tocar">Tocá aquí para ver las diferentes opciones</span>' +
+             '</button>';
+    }).join("");
+
+    var o = opts[i];
+    var h = '<h2>' + texto(o.n) + '</h2>' +
+            '<p class="incluye">Qué incluye</p><ul>' +
+            o.items.map(function(x){
+              return '<li><span>' + texto(x[0]) + '</span><span>' + texto(x[1]) + '</span></li>';
+            }).join("") + '</ul>' +
+            '<p class="total"><span>Total</span><span>' + texto(o.t) + '</span></p>';
+    if(o.save) h += '<div class="destaque">' + texto(o.save) + '</div>';
+    if(!o.star){
+      h += '<button type="button" class="empujon" id="empujon">Por poco más, la <b>' +
+           texto(opts[DESTACADA].n) + '</b> suma pizzas, bebidas y la limpieza de regalo. ' +
+           'Tocá para verla.</button>';
+    }
+    $("detalle").innerHTML = h;
+
+    var emp = $("empujon");
+    if(emp) emp.addEventListener("click", function(){ pintar(DESTACADA); });
+  }
+
+  // Una sola delegación para las tarjetas: se repintan en cada toque, así que
+  // escuchar en la grilla evita volver a atar los botones cada vez.
+  $("grilla").addEventListener("click", function(e){
+    var b = e.target.closest(".opcion");
+    if(b) pintar(Number(b.dataset.i));
+  });
+
+  function entrar(){
+    var v = $("codigo").value.trim().toUpperCase().replace(/\s+/g, "");
+    if(CODIGOS.indexOf(v) >= 0){
+      $("puerta").style.display = "none";
+      $("app").style.display = "block";
+      pintar(DESTACADA);
+    } else {
+      $("error").textContent = "Código incorrecto. Probá de nuevo.";
+    }
+  }
+  $("entrar").addEventListener("click", entrar);
+  $("codigo").addEventListener("keydown", function(e){ if(e.key === "Enter") entrar(); });
+})();
 </script>
 </body>
 </html>
