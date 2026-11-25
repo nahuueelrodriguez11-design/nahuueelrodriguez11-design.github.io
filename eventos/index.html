@@ -37,7 +37,7 @@ body{
   color:var(--verde);
 }
 .rubro{
-  margin-top:44px;
+  margin-top:40px;
   font-family:'Anton',Impact,'Arial Narrow',sans-serif;
   font-size:15px;line-height:1.3;letter-spacing:.16em;text-transform:uppercase;
   color:var(--gris);
@@ -93,6 +93,18 @@ header{
 header img{width:210px;max-width:76%;height:auto;display:block;margin:0 auto 18px}
 header h1{font-size:clamp(26px,7.4vw,36px);margin-top:10px}
 .bajada{margin-top:14px;font-size:15px;color:var(--gris);font-style:italic}
+
+/* ---------- cuántos invitados ---------- */
+/* Las mismas fichas que usa la carta para elegir sabores y extras. */
+.fichas{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.ficha{
+  border:1px solid var(--linea);background:transparent;color:var(--hueso);
+  border-radius:99px;padding:9px 16px;
+  font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;
+}
+.ficha[aria-pressed="true"]{
+  background:var(--verde);color:var(--negro);border-color:var(--verde);font-weight:700;
+}
 
 .grilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}
 .opcion{
@@ -202,13 +214,17 @@ header h1{font-size:clamp(26px,7.4vw,36px);margin-top:10px}
   <header>
     <div class="hoja">
       <img src="logo.png" alt="Kanthus" width="1200" height="393">
-      <p class="rotulo">Cumpleaños de 15 · aprox. 50 personas</p>
+      <p class="rotulo">Salón para eventos · Cumpleaños de 15</p>
       <h1>Eventos en Kanthus</h1>
-      <p class="bajada">Precios en pesos uruguayos. Propuesta especial por lanzamiento del salón.</p>
+      <p class="bajada">Elegí la cantidad de invitados y tocá una opción para ver todo lo que incluye. Precios en pesos uruguayos.</p>
     </div>
   </header>
 
   <div class="hoja">
+    <p class="rubro">¿Cuántos invitados son?</p>
+    <p class="nota-seccion">Los precios se ajustan solos a la cantidad que elijas.</p>
+    <div class="fichas" id="fichas"></div>
+
     <p class="rubro">Las opciones</p>
     <p class="nota-seccion">Tocá cualquiera para ver todo lo que incluye y el total.</p>
     <div class="grilla" id="grilla"></div>
@@ -222,7 +238,7 @@ header h1{font-size:clamp(26px,7.4vw,36px);margin-top:10px}
     </ul>
 
     <div class="cierre">
-      <a class="boton" href="https://wa.me/59891899265?text=Hola!%20Vimos%20la%20propuesta%20de%20eventos%20de%20Kanthus%20y%20queremos%20reservar" target="_blank" rel="noopener">Reservar por WhatsApp</a>
+      <a class="boton" id="wa" href="#" target="_blank" rel="noopener">Reservar por WhatsApp</a>
       <p>Te contestamos y coordinamos la fecha.</p>
     </div>
   </div>
@@ -234,36 +250,61 @@ header h1{font-size:clamp(26px,7.4vw,36px);margin-top:10px}
 
   var CODIGOS = ["FIESTA15", "KANTHUSEVENTOS"];
 
-  var burger = ["50 hamburguesas Doble cuarto con papas (doble carne, cheddar, panceta, cebolla y salsas, en pan de queso)", "$19.250"];
-  var pizza  = ["10 metros de pizza: muzzarella sola o solo salsa $350/m · con gusto (panceta, jamón o aceitunas) $400/m", "$3.500 a $4.000"];
-  var drinks = ["20 refrescos de 2,5 L línea Pepsi (Pepsi, 7up y Mirinda)", "$4.000"];
-  var salonC = ["Salón con mesas (precio especial con catering)", "$4.000"];
+  /* ---------- la cuenta, tal cual la mandó Nahuel ---------- */
+  var INVITADOS = [20, 30, 40, 50];
+  var SALON_SOLO = 7000, SALON_CAT = 4000;
+  var BURGER = 385, BURGER_CARTA = 480;
+  var PZ_SOLA = 350, PZ_GUSTO = 400, DRINK = 200;
 
-  var opts = [
-    {n:"Solo salón", p:"$7.000", s:"Ustedes traen la comida",
-     items:[["Salón con mesas","$7.000"]], t:"$7.000"},
-    {n:"Salón + hamburguesas", p:"$23.250", s:"aprox. $465 por persona",
-     items:[salonC, burger], t:"$23.250"},
-    {n:"Fiesta Kanthus Completa", star:1, p:"desde $30.750", s:"aprox. $615 a $625 por persona",
-     items:[salonC, burger, pizza, drinks, ["Limpieza posterior","DE REGALO"]],
-     t:"$30.750 a $31.250",
-     save:"No se ocupan de nada: salón, comida y bebida resueltos. Se ahorran más de $7.750 frente a contratar todo por separado, y la limpieza va de regalo."},
-    {n:"Salón + hamburguesas y pizzas", p:"desde $26.750", s:"sin bebidas · aprox. $535 a $545 por persona",
-     items:[salonC, burger, pizza], t:"$26.750 a $27.250"}
-  ];
+  var N = 50;          // con cuántos invitados abre
+  var SEL = 2;         // y en qué opción: la Fiesta Completa
+  var DESTACADA = 2;
 
-  var DESTACADA = 2;   // la Fiesta Completa: con la que abre y a la que empuja
+  function f(n){ return "$" + n.toLocaleString("es-UY"); }
+  function r(a, b){ return a === b ? f(a) : f(a) + " a " + f(b); }
 
+  function armar(n){
+    var b = n * BURGER, m = n / 5;
+    var pMin = m * PZ_SOLA, pMax = m * PZ_GUSTO;
+    var d = Math.round(n * 0.4), dr = d * DRINK;
+    var burger = [n + " hamburguesas Doble cuarto con papas (doble carne, cheddar, panceta, cebolla y salsas, en pan de queso)", f(b)];
+    var pizza  = [m + " metros de pizza: muzzarella sola o solo salsa $350/m · con gusto (panceta, jamón o aceitunas) $400/m", r(pMin, pMax)];
+    var drinks = [d + " refrescos de 2,5 L línea Pepsi (Pepsi, 7up y Mirinda)", f(dr)];
+    var salonC = ["Salón con mesas (precio especial con catering)", f(SALON_CAT)];
+    var pp = function(a, b2){
+      return "aprox. " + r(Math.round(a / n / 5) * 5, Math.round(b2 / n / 5) * 5) + " por persona";
+    };
+    var t2 = SALON_CAT + b, t4a = t2 + pMin, t4b = t2 + pMax, t3a = t4a + dr, t3b = t4b + dr;
+    var ahorro = (SALON_SOLO - SALON_CAT) + (BURGER_CARTA - BURGER) * n;
+    return [
+      {n:"Solo salón", p:f(SALON_SOLO), s:"Ustedes traen la comida",
+       items:[["Salón con mesas", f(SALON_SOLO)]], t:f(SALON_SOLO)},
+      {n:"Salón + hamburguesas", p:f(t2), s:pp(t2, t2),
+       items:[salonC, burger], t:f(t2)},
+      {n:"Fiesta Kanthus Completa", star:1, p:"desde " + f(t3a), s:pp(t3a, t3b),
+       items:[salonC, burger, pizza, drinks, ["Limpieza posterior","DE REGALO"]], t:r(t3a, t3b),
+       save:"No se ocupan de nada: salón, comida y bebida resueltos. Se ahorran más de " + f(ahorro) + " frente a contratar todo por separado, y la limpieza va de regalo."},
+      {n:"Salón + hamburguesas y pizzas", p:"desde " + f(t4a), s:"sin bebidas · " + pp(t4a, t4b),
+       items:[salonC, burger, pizza], t:r(t4a, t4b)}
+    ];
+  }
+
+  /* ---------- la pantalla ---------- */
   var $ = function(id){ return document.getElementById(id); };
   function texto(s){
     return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
 
-  function pintar(i){
-    var grilla = $("grilla");
-    grilla.innerHTML = opts.map(function(o, k){
+  function pintar(){
+    $("fichas").innerHTML = INVITADOS.map(function(g){
+      return '<button type="button" class="ficha" data-n="' + g + '" aria-pressed="' + (g === N) + '">' +
+             g + ' personas</button>';
+    }).join("");
+
+    var opts = armar(N);
+    $("grilla").innerHTML = opts.map(function(o, k){
       return '<button type="button" class="opcion' + (o.star ? ' destacada' : '') +
-             '" data-i="' + k + '" aria-pressed="' + (k === i) + '">' +
+             '" data-i="' + k + '" aria-pressed="' + (k === SEL) + '">' +
              (o.star ? '<span class="insignia">La más elegida</span>' : '') +
              '<span class="nombre">' + texto(o.n) + '</span>' +
              '<span class="precio">' + texto(o.p) + '</span>' +
@@ -272,8 +313,8 @@ header h1{font-size:clamp(26px,7.4vw,36px);margin-top:10px}
              '</button>';
     }).join("");
 
-    var o = opts[i];
-    var h = '<h2>' + texto(o.n) + '</h2>' +
+    var o = opts[SEL];
+    var h = '<h2>' + texto(o.n) + ' · ' + N + ' personas</h2>' +
             '<p class="incluye">Qué incluye</p><ul>' +
             o.items.map(function(x){
               return '<li><span>' + texto(x[0]) + '</span><span>' + texto(x[1]) + '</span></li>';
@@ -288,14 +329,22 @@ header h1{font-size:clamp(26px,7.4vw,36px);margin-top:10px}
     $("detalle").innerHTML = h;
 
     var emp = $("empujon");
-    if(emp) emp.addEventListener("click", function(){ pintar(DESTACADA); });
+    if(emp) emp.addEventListener("click", function(){ SEL = DESTACADA; pintar(); });
+
+    $("wa").href = "https://wa.me/59891899265?text=" + encodeURIComponent(
+      'Hola! Vimos la propuesta de eventos de Kanthus. Somos ' + N +
+      ' personas y nos interesa la opción "' + o.n + '".');
   }
 
-  // Una sola delegación para las tarjetas: se repintan en cada toque, así que
-  // escuchar en la grilla evita volver a atar los botones cada vez.
+  // Delegación: la grilla y las fichas se repintan en cada toque, así que
+  // escuchar en el contenedor evita volver a atar los botones cada vez.
+  $("fichas").addEventListener("click", function(e){
+    var b = e.target.closest(".ficha");
+    if(b){ N = Number(b.dataset.n); pintar(); }
+  });
   $("grilla").addEventListener("click", function(e){
     var b = e.target.closest(".opcion");
-    if(b) pintar(Number(b.dataset.i));
+    if(b){ SEL = Number(b.dataset.i); pintar(); }
   });
 
   function entrar(){
@@ -303,7 +352,7 @@ header h1{font-size:clamp(26px,7.4vw,36px);margin-top:10px}
     if(CODIGOS.indexOf(v) >= 0){
       $("puerta").style.display = "none";
       $("app").style.display = "block";
-      pintar(DESTACADA);
+      pintar();
     } else {
       $("error").textContent = "Código incorrecto. Probá de nuevo.";
     }
