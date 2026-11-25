@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Kanthus Eventos · Propuesta</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0d0d0d;color:#f2f2f2;line-height:1.5}
+.k{color:#2ecc71}
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.box{background:#181818;border:1px solid #2a2a2a;border-radius:18px;padding:32px;max-width:380px;width:100%;text-align:center}
+.box h1{font-size:28px;margin-bottom:6px}
+.box p{color:#aaa;margin-bottom:20px}
+input{width:100%;padding:14px;border-radius:10px;border:1px solid #333;background:#0d0d0d;color:#fff;font-size:16px;text-align:center;text-transform:uppercase;letter-spacing:2px}
+button{cursor:pointer;border:none;border-radius:10px;font-weight:700;font-size:16px}
+.btn{width:100%;margin-top:12px;padding:14px;background:#2ecc71;color:#0d0d0d}
+.err{color:#ff6b6b;margin-top:10px;min-height:20px;font-size:14px}
+#app{display:none;max-width:980px;margin:0 auto;padding:28px 18px 60px}
+header{text-align:center;margin-bottom:28px}
+header h1{font-size:34px;letter-spacing:1px}
+header p{color:#aaa}
+.tag{display:inline-block;background:#1e2a22;color:#2ecc71;padding:4px 12px;border-radius:20px;font-size:13px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.card{background:#181818;border:2px solid #2a2a2a;border-radius:16px;padding:20px;cursor:pointer;transition:.2s;position:relative}
+.card:hover{transform:translateY(-3px);border-color:#444}
+.card.sel{border-color:#2ecc71}
+.card.star{border-color:#2ecc71;background:linear-gradient(160deg,#1b2a20,#181818)}
+.badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#2ecc71;color:#0d0d0d;font-size:12px;font-weight:800;padding:4px 12px;border-radius:20px;white-space:nowrap}
+.card h3{font-size:18px;margin:6px 0}
+.price{font-size:26px;font-weight:800;color:#2ecc71}
+.small{color:#999;font-size:13px}
+#detail{margin-top:24px;background:#181818;border-radius:16px;padding:24px;border:1px solid #2a2a2a}
+#detail h2{margin-bottom:10px}
+#detail ul{list-style:none;margin:12px 0}
+#detail li{padding:8px 0;border-bottom:1px solid #262626;display:flex;justify-content:space-between;gap:12px}
+#detail li span:last-child{white-space:nowrap;color:#ccc}
+.total{font-size:22px;font-weight:800;margin-top:10px}
+.save{background:#1e2a22;color:#2ecc71;border-radius:10px;padding:12px;margin-top:14px}
+.extra{margin-top:28px;text-align:center;color:#aaa;font-size:14px}
+.wa{display:inline-block;margin-top:18px;background:#25d366;color:#0d0d0d;padding:14px 22px;border-radius:12px;font-weight:800;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="gate"><div class="box">
+<h1><span class="k">K</span>ANTHUS</h1>
+<p>Propuesta privada para tu evento.<br>Ingresá el código que te pasamos.</p>
+<input id="code" placeholder="CÓDIGO" onkeydown="if(event.key==='Enter')enter()">
+<button class="btn" onclick="enter()">Ver propuesta</button>
+<div class="err" id="err"></div>
+</div></div>
+
+<div id="app">
+<header>
+<div class="tag">Cumpleaños de 15 · aprox. 50 personas</div>
+<h1><span class="k">K</span>ANTHUS EVENTOS</h1>
+<p>Elegí una opción para ver todo lo que incluye. Precios en pesos uruguayos.</p>
+</header>
+<div class="grid" id="grid"></div>
+<div id="detail"></div>
+<div class="extra">
+Limpieza posterior al evento: opcional, $1.500 (si la hacen ustedes, no se cobra).<br>
+<b class="k">En la Fiesta Kanthus Completa la limpieza va de regalo.</b><br>
+Cupos limitados: propuesta especial por lanzamiento del salón.<br>
+<a class="wa" href="https://wa.me/59891899265?text=Hola!%20Vimos%20la%20propuesta%20de%20eventos%20de%20Kanthus%20y%20queremos%20reservar" target="_blank">Reservar por WhatsApp</a>
+</div>
+</div>
+
+<script>
+const CODES=["FIESTA15","KANTHUSEVENTOS"];
+function enter(){
+ const v=document.getElementById('code').value.trim().toUpperCase().replace(/\s+/g,'');
+ if(CODES.includes(v)){document.getElementById('gate').style.display='none';document.getElementById('app').style.display='block';render(2);}
+ else document.getElementById('err').textContent='Código incorrecto. Probá de nuevo.';
+}
+const burger=["50 hamburguesas Doble cuarto con papas (doble carne, cheddar, panceta, cebolla y salsas, en pan de queso)","$19.250"];
+const pizza=["10 metros de pizza: muzzarella sola o solo salsa $350/m · con gusto (panceta, jamón o aceitunas) $400/m","$3.500 a $4.000"];
+const drinks=["20 refrescos de 2,5 L línea Pepsi (Pepsi, 7up y Mirinda)","$4.000"];
+const salonC=["Salón con mesas (precio especial con catering)","$4.000"];
+const opts=[
+ {n:"Solo salón",p:"$7.000",s:"Ustedes traen la comida",items:[["Salón con mesas","$7.000"]],t:"$7.000"},
+ {n:"Salón + hamburguesas",p:"$23.250",s:"aprox. $465 por persona",items:[salonC,burger],t:"$23.250"},
+ {n:"Fiesta Kanthus Completa",star:1,p:"desde $30.750",s:"aprox. $615 a $625 por persona",items:[salonC,burger,pizza,drinks,["Limpieza posterior","DE REGALO"]],t:"$30.750 a $31.250",save:"No se ocupan de nada: salón, comida y bebida resueltos. Se ahorran más de $7.750 frente a contratar todo por separado, y la limpieza va de regalo."},
+ {n:"Salón + hamburguesas y pizzas",p:"desde $26.750",s:"sin bebidas · aprox. $535 a $545 por persona",items:[salonC,burger,pizza],t:"$26.750 a $27.250"}
+];
+function render(i){
+ document.getElementById('grid').innerHTML=opts.map((o,k)=>`<div class="card ${o.star?'star':''} ${k===i?'sel':''}" onclick="render(${k})">${o.star?'<div class="badge">⭐ LA MÁS ELEGIDA</div>':''}<h3>${o.n}</h3><div class="price">${o.p}</div><div class="small">${o.s}</div></div>`).join('');
+ const o=opts[i];
+ document.getElementById('detail').innerHTML=`<h2>${o.star?'⭐ ':''}${o.n}</h2><div class="small">Qué incluye:</div><ul>${o.items.map(x=>`<li><span>${x[0]}</span><span>${x[1]}</span></li>`).join('')}</ul><div class="total">Total: <span class="k">${o.t}</span></div>${o.save?`<div class="save">${o.save}</div>`:''}${!o.star?`<div class="save" style="cursor:pointer" onclick="render(2)">💡 Por poco más, la <b>Fiesta Kanthus Completa</b> suma pizzas, bebidas y la limpieza de regalo. Tocá para verla.</div>`:''}`;
+}
+</script>
+</body>
+</html>
